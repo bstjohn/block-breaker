@@ -7,14 +7,3 @@ canvas {
     display: block;
     margin: 0 auto;
 }
-table {
-    border: 1px solid lightblue;
-    margin-left: 38%;
-}
-tr {
-    border: 1px solid lightblue;
-}
-th {
-    width: 50px;
-    border: 1px solid lightblue;
-}

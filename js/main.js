@@ -3,9 +3,10 @@
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 
-// Listen for keyboard events
+// Listen for events
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener('mousemove', mouseMoveHandler, false);
 
 // Constants
 var RIGHT_CURSOR_CODE = 39;
@@ -22,6 +23,7 @@ var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 var paddleHeight = 10;
 var paddleWidth = 75;
+var score = 0;
 
 // Coordinates
 var ballX = canvas.width / 2;
@@ -69,12 +71,11 @@ function keyUpHandler(e) {
     }
 }
 
-function updateTable() {
-    document.getElementById('x-row').innerHTML = ballX;
-    document.getElementById('y-row').innerHTML = ballY;
-    document.getElementById('dx-row').innerHTML = dx;
-    document.getElementById('dy-row').innerHTML = dy;
-    document.getElementById('paddle-x-row').innerHTML = paddleX;
+function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width) {
+        paddleX = relativeX - paddleWidth / 2;
+    }
 }
 
 function collisionDetection() {
@@ -84,13 +85,14 @@ function collisionDetection() {
             if (brick.isDestroyed) {
                 continue;
             }
-            
+
             if (ballX > brick.x &&
                 ballX < brick.x + brickWidth &&
                 ballY > brick.y &&
                 ballY < brick.y + brickHeight
             ) {
                 brick.isDestroyed = true;
+                score++;
                 dy = -dy;
             }
         }
@@ -134,12 +136,24 @@ function drawPaddle() {
     ctx.closePath();
 }
 
+function drawScore() {
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#00095DD';
+    ctx.fillText('Score: ' + score, 8, 20);
+
+    if (score === brickColumnCount * brickRowCount) {
+        clearInterval(drawInterval);
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
-    drawPaddle();
-    collisionDetection();
     drawBricks();
+    drawPaddle();
+    drawScore();
+
+    collisionDetection();
 
     if (ballY + dy < ballRadius) {
         dy = -dy;
@@ -167,8 +181,6 @@ function draw() {
 
     ballX += dx;
     ballY += dy;
-
-    updateTable();
 }
 
 // Execute the draw method every 10 milliseconds
