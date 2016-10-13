@@ -41,7 +41,8 @@ for (var i = 0; i < brickColumnCount; i++) {
     for (var j = 0; j < brickRowCount; j++) {
         bricks[i][j] = {
             x : 0,
-            y : 0
+            y : 0,
+            isDestroyed: false
         };
     }
 }
@@ -76,6 +77,26 @@ function updateTable() {
     document.getElementById('paddle-x-row').innerHTML = paddleX;
 }
 
+function collisionDetection() {
+    for (var i = 0; i < brickColumnCount; i++) {
+        for (var j = 0; j < brickRowCount; j++) {
+            var brick = bricks[i][j];
+            if (brick.isDestroyed) {
+                continue;
+            }
+            
+            if (ballX > brick.x &&
+                ballX < brick.x + brickWidth &&
+                ballY > brick.y &&
+                ballY < brick.y + brickHeight
+            ) {
+                brick.isDestroyed = true;
+                dy = -dy;
+            }
+        }
+    }
+}
+
 function drawBall() {
     ctx.beginPath();
     ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
@@ -87,10 +108,15 @@ function drawBall() {
 function drawBricks() {
     for (var i = 0; i < brickColumnCount; i++) {
         for (var j = 0; j < brickRowCount; j++) {
+            var currentBrick = bricks[i][j];
+            if (currentBrick.isDestroyed) {
+                continue;
+            }
+
             var brickX = (i * (brickWidth + brickPadding)) + brickOffsetLeft;
             var brickY = (j * (brickHeight + brickPadding)) + brickOffsetTop;
-            bricks[i][j].x = brickX;
-            bricks[i][j].y = brickY;
+            currentBrick.x = brickX;
+            currentBrick.y = brickY;
             ctx.beginPath();
             ctx.rect(brickX, brickY, brickWidth, brickHeight);
             ctx.fillStyle = '#0095DD';
@@ -112,12 +138,13 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
+    collisionDetection();
     drawBricks();
 
     if (ballY + dy < ballRadius) {
         dy = -dy;
     } else if (ballY + dy > canvas.height - ballRadius) {
-        if (ballX > paddleX && ballX < paddleX + paddleWidth + 2) {
+        if (ballX > paddleX && ballX < paddleX + paddleWidth + 4) {
             dy = -dy;
         } else {
             // alert('GAME OVER');
