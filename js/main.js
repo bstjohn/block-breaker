@@ -3,20 +3,48 @@
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 
-ctx.beginPath();
-ctx.rect(20, 40, 50, 50);
-ctx.fillStyle = '#FF0000';
-ctx.fill();
-ctx.closePath();
+// Coordinates
+var ballX = canvas.width / 2;
+var ballY = canvas.height - 30;
+var dx = 2;
+var dy = -2;
+var paddleZ = (canvas.width - paddleWidth) / 2;
 
-ctx.beginPath();
-ctx.arc(240, 160, 20, 0, Math.PI*2, false);
-ctx.fillStyle = 'green';
-ctx.stroke();
-ctx.closePath();
+// Properties
+var ballRadius = 10;
+var paddleHeight = 10;
+var paddleWidth = 75;
 
-ctx.beginPath();
-ctx.arc(240, 160, 18, 0, Math.PI*2, false);
-ctx.fillStyle = 'blue';
-ctx.fill();
-ctx.closePath();
+function updateTable() {
+    document.getElementById('x-row').innerHTML = ballX;
+    document.getElementById('y-row').innerHTML = ballY;
+    document.getElementById('dx-row').innerHTML = dx;
+    document.getElementById('dy-row').innerHTML = dy;
+}
+
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+    ctx.fillStyle = '#0095DD';
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
+    updateTable();
+    ballX += dx;
+    ballY += dy;
+
+    if (ballY + dy < ballRadius || ballY + dy > canvas.height - ballRadius) {
+        dy = -dy;
+    }
+
+    if (ballX + dx < ballRadius || ballX + dx > canvas.width - ballRadius) {
+        dx = - dx;
+    }
+}
+
+// Execute the draw method every 10 milliseconds
+setInterval(draw, 10);
