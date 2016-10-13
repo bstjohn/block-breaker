@@ -78,8 +78,16 @@ function draw() {
     drawBall();
     drawPaddle();
 
-    if (ballY + dy < ballRadius || ballY + dy > canvas.height - ballRadius) {
+    if (ballY + dy < ballRadius) {
         dy = -dy;
+    } else if (ballY + dy > canvas.height - ballRadius) {
+        if (ballX > paddleX && ballX < paddleX + paddleWidth + 2) {
+            dy = -dy;
+        } else {
+            // alert('GAME OVER');
+            // document.location.reload();
+            clearInterval(drawInterval);
+        }
     }
 
     if (ballX + dx < ballRadius || ballX + dx > canvas.width - ballRadius) {
@@ -101,4 +109,4 @@ function draw() {
 }
 
 // Execute the draw method every 10 milliseconds
-setInterval(draw, 10);
+var drawInterval = setInterval(draw, 10);
