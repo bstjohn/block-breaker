@@ -13,7 +13,6 @@ var RIGHT_CURSOR_CODE = 39;
 var LEFT_CURSOR_CODE = 37;
 
 // Properties
-var ballRadius = 10;
 var brickRowCount = 3;
 var brickColumnCount = 5;
 var brickWidth = 75;
@@ -28,8 +27,7 @@ var score = 0;
 var gameWon = false;
 
 // Coordinates
-var ballX = canvas.width / 2;
-var ballY = canvas.height - 30;
+var ball = Ball(10, canvas.width / 2, canvas.height - 30);
 var dx = 2;
 var dy = -2;
 var paddleX = (canvas.width - paddleWidth) / 2;
@@ -88,10 +86,10 @@ function collisionDetection() {
                 continue;
             }
 
-            if (ballX > brick.x &&
-                ballX < brick.x + brickWidth &&
-                ballY > brick.y &&
-                ballY < brick.y + brickHeight
+            if (ball.x > brick.x &&
+                ball.x < brick.x + brickWidth &&
+                ball.y > brick.y &&
+                ball.y < brick.y + brickHeight
             ) {
                 brick.isDestroyed = true;
                 score++;
@@ -103,7 +101,7 @@ function collisionDetection() {
 
 function drawBall() {
     ctx.beginPath();
-    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     ctx.fillStyle = '#0095DD';
     ctx.fill();
     ctx.closePath();
@@ -192,10 +190,10 @@ function draw() {
         return;
     }
 
-    if (ballY + dy < ballRadius) {
+    if (ball.y + dy < ball.radius) {
         dy = -dy;
-    } else if (ballY + dy > canvas.height - ballRadius) {
-        if (ballX > paddleX && ballX < paddleX + paddleWidth + 4) {
+    } else if (ball.y + dy > canvas.height - ball.radius) {
+        if (ball.x > paddleX && ball.x < paddleX + paddleWidth + 4) {
             dy = -dy;
         } else {
             lives--;
@@ -209,15 +207,15 @@ function draw() {
 
             animateLostLife();
 
-            ballX = canvas.width / 2;
-            ballY = canvas.height - 30;
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height - 30;
             dx = -2;
             dy = -2;
             paddleX = (canvas.width - paddleWidth) / 2;
         }
     }
 
-    if (ballX + dx < ballRadius || ballX + dx > canvas.width - ballRadius) {
+    if (ball.x + dx < ball.radius || ball.x + dx > canvas.width - ball.radius) {
         dx = - dx;
     }
 
@@ -227,8 +225,8 @@ function draw() {
         paddleX -= 7;
     }
 
-    ballX += dx;
-    ballY += dy;
+    ball.x += dx;
+    ball.y += dy;
 
     requestAnimationFrame(draw);
 }
