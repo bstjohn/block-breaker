@@ -1,12 +1,12 @@
 'use strict';
 
-var canvas = document.getElementById('myCanvas');
+var canvas = $('#myCanvas')[0];
 var ctx = canvas.getContext('2d');
 
 // Listen for events
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-document.addEventListener('mousemove', mouseMoveHandler, false);
+$(document).keydown(keyDownHandler);
+$(document).keyup(keyUpHandler);
+$('#myCanvas').on('mousemove', mouseMoveHandler);
 
 // Constants
 var RIGHT_CURSOR_CODE = 39;
