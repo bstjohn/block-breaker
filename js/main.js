@@ -168,6 +168,16 @@ function drawScore() {
     }
 }
 
+function animateLostLife() {
+    ctx.beginPath();
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.closePath();
+
+    requestAnimationFrame(animateLostLife);
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
@@ -197,6 +207,8 @@ function draw() {
                 return;
             }
 
+            animateLostLife();
+
             ballX = canvas.width / 2;
             ballY = canvas.height - 30;
             dx = -2;
@@ -214,8 +226,6 @@ function draw() {
     } else if (leftPressed && paddleX > 0) {
         paddleX -= 7;
     }
-
-    // console.log(paddleX);
 
     ballX += dx;
     ballY += dy;
