@@ -25,6 +25,7 @@ var lives = 3;
 var paddleHeight = 10;
 var paddleWidth = 75;
 var score = 0;
+var gameWon = false;
 
 // Coordinates
 var ballX = canvas.width / 2;
@@ -149,6 +150,12 @@ function drawPaddle() {
     ctx.closePath();
 }
 
+function drawYouWin() {
+    ctx.font = '24px Arial';
+    ctx.fillStyle = 'green';
+    ctx.fillText('You Win!', canvas.width / 2 - 65, canvas.height / 2);
+}
+
 function drawScore() {
     ctx.font = '16px Arial';
     ctx.fillStyle = '#00095DD';
@@ -156,6 +163,8 @@ function drawScore() {
 
     if (score === brickColumnCount * brickRowCount) {
         // clearInterval(drawInterval);
+        drawYouWin();
+        gameWon = true;
     }
 }
 
@@ -168,6 +177,10 @@ function draw() {
     drawLives();
 
     collisionDetection();
+
+    if (gameWon) {
+        return;
+    }
 
     if (ballY + dy < ballRadius) {
         dy = -dy;
@@ -189,8 +202,6 @@ function draw() {
             dx = -2;
             dy = -2;
             paddleX = (canvas.width - paddleWidth) / 2;
-            // alert('GAME OVER');
-            // document.location.reload();
         }
     }
 
